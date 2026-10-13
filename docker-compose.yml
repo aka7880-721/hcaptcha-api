@@ -1,0 +1,27 @@
+services:
+  hsw:
+    build:
+      context: ./solver
+      dockerfile: Dockerfile
+    ports:
+      - "2030:2030"
+    environment:
+      HSW_PORT: "2030"
+      HSW_HEADLESS: "true"
+    restart: unless-stopped
+
+  api:
+    build:
+      context: .
+      dockerfile: Dockerfile
+    ports:
+      - "8080:8080"
+    env_file:
+      - .env
+    environment:
+      HSW_SERVER_URL: http://hsw:2030
+      HOST: "0.0.0.0"
+      PORT: "8080"
+    depends_on:
+      - hsw
+    restart: unless-stopped
